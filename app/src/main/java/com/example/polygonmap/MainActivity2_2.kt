@@ -5,15 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.GoogleMap
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
-import com.example.polygonmap.R
 import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener
 import com.google.android.gms.maps.model.*
 import java.util.ArrayList
 
@@ -38,7 +34,7 @@ class MainActivity2_2 : AppCompatActivity(), OnMapReadyCallback {
         clear = findViewById(R.id.btn_clear_polygon)
         save = findViewById(R.id.btn_save_json)
 
-        clear?.setOnClickListener(View.OnClickListener { view: View? ->
+        clear?.setOnClickListener({
             if (polygon != null) {
                 polygon!!.remove()
             }
@@ -46,7 +42,8 @@ class MainActivity2_2 : AppCompatActivity(), OnMapReadyCallback {
             latlngList.clear()
             markerList.clear()
         })
-        save?.setOnClickListener(View.OnClickListener { view: View? ->
+
+        save?.setOnClickListener {
             if (prettyGson != null) {
                 Toast.makeText(
                     applicationContext,
@@ -54,8 +51,9 @@ class MainActivity2_2 : AppCompatActivity(), OnMapReadyCallback {
                     Toast.LENGTH_LONG
                 ).show()
             } else {
+                //Aqui va el metodo guardar
             }
-        })
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -87,4 +85,6 @@ class MainActivity2_2 : AppCompatActivity(), OnMapReadyCallback {
             println(prettyJson)
         }
     }
+
+
 }

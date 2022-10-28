@@ -9,6 +9,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -22,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -40,12 +47,15 @@ public class MainActivity2 extends AppCompatActivity implements OnMapReadyCallba
 
     Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
 
+    private RequestQueue queue;
+
 
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.google_map);
+        assert supportMapFragment != null;
         supportMapFragment.getMapAsync(this);
 
         clear = findViewById(R.id.btn_clear_polygon);
@@ -61,14 +71,47 @@ public class MainActivity2 extends AppCompatActivity implements OnMapReadyCallba
         });
 
         save.setOnClickListener(view -> {
-            if (prettyGson != null){
-                Toast.makeText(getApplicationContext(), "No se puede guardar un poligono vacio", Toast.LENGTH_LONG).show();
-            }else {
-                
+            if (latlngList != null){
+                LatLng firstCoor = latlngList.get(0);
+                latlngList.add(firstCoor);
+//                System.out.println(latlngList);
+                String prettyJson = prettyGson.toJson(latlngList);
+                System.out.println(prettyJson);
             }
+//            metodoPost();
         });
 
+//        queue = Volley.newRequestQueue(this);
+
+
+
     }
+
+//    private void metodoPost(){
+//        String url = "Aqui va la URL";
+//
+//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
+//            @Override
+//            public void onResponse(JSONObject response) {
+//                try {
+//                    JSONArray mJsonArray = response.getJSONArray(String.valueOf(prettyGson));
+//
+//                    Toast.makeText(MainActivity2.this, "Gson Enviado: " + mJsonArray, Toast.LENGTH_LONG).show();
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//
+//            }
+//        });
+//
+//        queue.add(request);
+//    }
+
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
@@ -91,15 +134,6 @@ public class MainActivity2 extends AppCompatActivity implements OnMapReadyCallba
 
             polygon.setFillColor(Color.RED);
             polygon.setStrokeColor(Color.BLACK);
-
-//            GsonBuilder gsonBuilder = new GsonBuilder();
-//            Gson gson = gsonBuilder.create();
-//            String JSONObject = gson.toJson(latlngList);
-//            System.out.println(JSONObject);
-
-            String prettyJson = prettyGson.toJson(latlngList);
-            System.out.println(prettyJson);
         });
     }
-
 }
