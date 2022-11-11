@@ -1,20 +1,16 @@
 package com.example.polygonmap;
 
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import com.example.polygonmap.Utility.NetworkChangerListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -27,13 +23,9 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.List;
-import java.lang.reflect.Type;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class MainActivity2 extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -48,6 +40,7 @@ public class MainActivity2 extends AppCompatActivity implements OnMapReadyCallba
     Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
 
     private RequestQueue queue;
+    NetworkChangerListener networkChangerListener = new NetworkChangerListener();
 
 
     public void onCreate(Bundle savedInstanceState){
@@ -77,7 +70,13 @@ public class MainActivity2 extends AppCompatActivity implements OnMapReadyCallba
 //                System.out.println(latlngList);
                 String prettyJson = prettyGson.toJson(latlngList);
                 System.out.println(prettyJson);
+
+                polygon.remove();
+                for (Marker marker : markerList)marker.remove();
+
             }
+            new SweetAlertDialog(this).setTitleText("Poligono Guardado").show();
+
 //            metodoPost();
         });
 
@@ -96,7 +95,7 @@ public class MainActivity2 extends AppCompatActivity implements OnMapReadyCallba
 //                try {
 //                    JSONArray mJsonArray = response.getJSONArray(String.valueOf(prettyGson));
 //
-//                    Toast.makeText(MainActivity2.this, "Gson Enviado: " + mJsonArray, Toast.LENGTH_LONG).show();
+//                    Toast.makeText(MainActivity2.this, "Predio Guardado: " + mJsonArray, Toast.LENGTH_LONG).show();
 //
 //                } catch (JSONException e) {
 //                    e.printStackTrace();
@@ -136,4 +135,16 @@ public class MainActivity2 extends AppCompatActivity implements OnMapReadyCallba
             polygon.setStrokeColor(Color.BLACK);
         });
     }
+
+    protected void onStart(){
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkChangerListener, filter);
+        super.onStart();
+    }
+
+    protected void onStop(){
+        unregisterReceiver(networkChangerListener);
+        super.onStop();
+    }
+
 }

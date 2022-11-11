@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Ciudad Acuña</string>
+    <string name="guardar">Guardar</string>
+    <string name="limpiar">limpiar</string>
+    <string name="todo">TODO</string>
+    <string name="oops">OOPS</string>
+    <string name="no_tienes_conexion_a_internet">No Tienes Conexion a Internet</string>
+    <string name="porfavor_checa_tu_conexion_a_internet">PorFavor Checa tu Conexion a Internet</string>
+    <string name="reintentar">Reintentar</string>
 </resources>
